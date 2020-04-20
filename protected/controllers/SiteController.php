@@ -44,7 +44,7 @@ class SiteController extends Controller
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('dashboard','logout'),
                                 'expression'=>function($user){
-                                        return $_SESSION['role']<=2;
+                                        return $_SESSION['status_login']==1;
                                 },
 			),
 			array('deny',  // deny all users
@@ -66,20 +66,21 @@ class SiteController extends Controller
                 $this->redirect(array('login'));
 	}
         
-        public function actionDashboard()
+    public function actionDashboard()
 	{
-            if($_SESSION['role']==1){
-                $data_tracking=Faskes::model()->getTrackingFaskes($_SESSION['faskesId']);
-            }else{
-                $data_tracking=Faskes::model()->getTrackingLocation($_SESSION['areaCode']);
-                //$data_tracking="TIDAK ADA DATA";
-            }
+            // if($_SESSION['role']==1){
+            //     $data_tracking=Faskes::model()->getTrackingFaskes($_SESSION['faskesId']);
+            // }else{
+            //     $data_tracking=Faskes::model()->getTrackingLocation($_SESSION['areaCode']);
+            //     //$data_tracking="TIDAK ADA DATA";
+            // }
             
 
-            $data_tracking = array(
-                    "data_tracking" => $data_tracking,
-                );
-            $this->render('index',$data_tracking);
+            // $data_tracking = array(
+            //         "data_tracking" => $data_tracking,
+            //     );
+            // $this->render('index',$data_tracking);
+        $this->render('index');
 	}
 
 	/**
@@ -142,63 +143,16 @@ class SiteController extends Controller
                         
                         $data=http_build_query($data_array);
                         
-                        $result=$this->callAPI("POST", "https://twitterjobvacancy.online/api_perisai/public/user/login", $data);
+                        $result=$this->callAPI("POST", "https://andalancahayasejahtera.com/silalindas_api/public/user/login", $data);
                         
                         $response = json_decode($result, true);
                         if($response['status']==200){
                             
                             $_SESSION['token']=$response['data']['token'];
-                            $_SESSION['role']=$response['data']['user']['role'];
                             $_SESSION['user_id']=$response['data']['user']['id'];
+                            $_SESSION['username']=$response['data']['user']['username'];
                             $_SESSION['status_login']=1;
-                            if($_SESSION['role']==2){
-                                $result=Api::model()->callAPI("GET", "/getDinkesUser/".$_SESSION['user_id'], false);
-
-                                $response = json_decode($result, true);
-
-                                if($response['code']==200){
-                                    $_SESSION['name']="DINKES <br/>".$response['data'][0]['KotaName'];
-                                    $_SESSION['dinkesId']=$response['data'][0]['dinkesId'];
-                                    $_SESSION['areaCode']=$response['data'][0]['areaCode'];
-                                    
-                                    $total_person=Api::model()->callAPI("GET", "/getPersonStatusLocation/".$_SESSION['areaCode'], false);
-                                    $total_person = json_decode($total_person, true);
-
-                                    if($total_person['code']==200){
-                                        $_SESSION['odp']=$total_person['data']['jumlah_odp'];
-                                        $_SESSION['pdp']=$total_person['data']['jumlah_pdp'];
-                                        $_SESSION['selesai']=$total_person['data']['jumlah_selesai'];
-                                        $_SESSION['otg']=$total_person['data']['jumlah_otg'];
-                                        $_SESSION['positif']=$total_person['data']['jumlah_positive'];
-                                        $_SESSION['karantina']=$total_person['data']['jumlah_karantina'];
-                                    }
-                                }
-                            }else if($_SESSION['role']==1){
-                                $result=Api::model()->callAPI("GET", "/getFaskesUser/".$_SESSION['user_id'], false);
-
-                                $response = json_decode($result, true);
-
-                                if($response['code']==200){
-                                    $_SESSION['name']=$response['data'][0]['faskesName'];
-                                    $_SESSION['faskesId']=$response['data'][0]['faskesId'];
-                                    $_SESSION['areaCode']=$response['data'][0]['areaCode'];
-
-                                    $data_array =  array(
-                                        "faskesId" =>$_SESSION['faskesId']
-                                    );
-                                    $total_person=Api::model()->callAPI("GET", "/getPersonStatusFaskes/".$_SESSION['faskesId'], false);
-                                    $total_person = json_decode($total_person, true);
-
-                                    if($total_person['code']==200){
-                                        $_SESSION['odp']=$total_person['data']['jumlah_odp'];
-                                        $_SESSION['pdp']=$total_person['data']['jumlah_pdp'];
-                                        $_SESSION['selesai']=$total_person['data']['jumlah_selesai'];
-                                        $_SESSION['otg']=$total_person['data']['jumlah_otg'];
-                                        $_SESSION['positif']=$total_person['data']['jumlah_positive'];
-                                        $_SESSION['karantina']=$total_person['data']['jumlah_karantina'];
-                                    }
-                                }
-                            }
+                           
                             $this->redirect(array("dashboard"));
                         }else{
                             //echo "gagal";

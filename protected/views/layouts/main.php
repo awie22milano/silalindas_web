@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>PERISAI</title>
+  <title>SILALINDAS</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -27,6 +27,10 @@
   <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/summernote/summernote-bs4.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="<?php echo Yii::app()->theme->baseUrl; ?>/dist/css/font.css" rel="stylesheet">
+
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
   
     <!-- jQuery -->
     <script src="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/jquery/jquery.min.js"></script>
@@ -62,6 +66,9 @@
     <script src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/js/pages/dashboard.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/js/demo.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
   
   <script type="text/javascript"> 
     function display_c(){
@@ -94,7 +101,7 @@
     </ul>
     <ul class="navbar-nav">
       <li class="nav-item">
-        Welcome to Perisai, Pelaporan Aktivitas Karantina Mandiri!
+        Welcome to SILALINDAS, Sistem Lalu Lintas Cerdas!
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
@@ -114,9 +121,9 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="<?php echo Yii::app()->request->baseUrl; ?>" class="brand-link">
-      <img src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      <img src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/img/transport.png" alt="SILALINDAS Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">PERISAI</span>
+      <span class="brand-text font-weight-light">SILALINDAS</span>
     </a>
 
     <!-- Sidebar -->
@@ -124,10 +131,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/img/32689.jpg" class="img-circle elevation-2" alt="User Image">
+          <img src="<?php echo Yii::app()->theme->baseUrl; ?>/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block"><?php echo $_SESSION['name']; ?></a>
+          <a href="#" class="d-block"><?php echo $_SESSION['username']; ?></a>
         </div>
       </div>
 
@@ -136,25 +143,21 @@
             $explode1=explode("php?r=",$_SERVER['REQUEST_URI']);
             $halaman=explode("/",$explode1[1]); 
             $class_menu_dashboard="nav-link";
-            $class_menu_profil="nav-link";
-            $class_menu_faskes="nav-link";
-            $class_menu_odp="nav-link";
+            $class_menu_peta="nav-link";
+            $class_menu_about="nav-link";
             if($halaman[0]=="site"){
                 $active_page="Dashboard";
                 $class_menu_dashboard="nav-link active";
             }
-            else if($halaman[0]=="profil"){
-                $active_page="Profil";
-                $class_menu_profil="nav-link active";
+            else if($halaman[0]=="peta"){
+                $active_page="Peta";
+                $class_menu_peta="nav-link active";
             }
-            else if($halaman[0]=="faskes"){
-                $active_page="Faskes";
-                $class_menu_faskes="nav-link active";
+            else if($halaman[0]=="about"){
+                $active_page="About";
+                $class_menu_about="nav-link active";
             }
-            else{
-                $active_page="Orang Dalam Pengawasan";
-                $class_menu_odp="nav-link active";
-            }
+            
       ?> 
       
       <nav class="mt-2">
@@ -171,46 +174,19 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="<?php echo Yii::app()->controller->createUrl('profil/index')?>" class="<?php echo $class_menu_profil; ?>">
+            <a href="<?php echo Yii::app()->controller->createUrl('peta/index')?>" class="<?php echo $class_menu_peta; ?>">
               <i class="nav-icon far fa-image"></i>
               <p>
-                Profil
+                Peta
                 <!--<span class="badge badge-info right">2</span>-->
               </p>
             </a>
           </li>
-          <?php if($_SESSION['role']==2){?>
-          <li class="nav-item has-treeview">
-            <a href="#" class="<?php echo $class_menu_faskes; ?>">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Faskes
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo Yii::app()->controller->createUrl('faskes/index')?>" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Daftar Faskes</p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo Yii::app()->controller->createUrl('faskes/add')?>" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Tambah Faskes</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <?php } ?>
           <li class="nav-item">
-            <a href="<?php echo Yii::app()->controller->createUrl('odp/index')?>" class="<?php echo $class_menu_odp; ?>">
+            <a href="<?php echo Yii::app()->controller->createUrl('about/index')?>" class="<?php echo $class_menu_about; ?>">
               <i class="nav-icon fas fa-table"></i>
               <p>
-                ODP
+                About
               </p>
             </a>
           </li>
@@ -253,54 +229,6 @@
     <section class="content">
       <div class="container-fluid">
         
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3><?php echo $_SESSION['selesai'];?><sup style="font-size: 20px">orang</sup></h3>
-
-                <p>Selesai Masa Karantina</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-ios-people-outline"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3><?php echo $_SESSION['odp'];?><sup style="font-size: 20px">orang</sup></h3>
-
-                <p>Orang Dalam Pengawasan (ODP)</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="<?php echo Yii::app()->controller->createUrl('odp/index')?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-4 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3><?php echo $_SESSION['pdp'];?><sup style="font-size: 20px">orang</sup></h3>
-
-                <p>Pasien Dalam Pengawasan (PDP)</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-medkit"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-        </div>
-        
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -314,7 +242,7 @@
     </section>
   </div>
   <footer class="main-footer">
-      <strong>Copyright &copy; MOLTI Kelompok 3</strong>
+      <strong>Copyright &copy; PLTI Kelompok 3</strong>
   </footer>
 
   <aside class="control-sidebar control-sidebar-dark">

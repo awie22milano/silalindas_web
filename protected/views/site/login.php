@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>PERISAI | Log in</title>
+  <title>SILALINDAS</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -21,12 +21,12 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <b>PERISAI</b>
+    <b>SILALINDAS</b>
   </div>
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Pelaporan Aktivitas Karantina Mandiri</p>
+      <p class="login-box-msg">Sistem Lalu Lintas Cerdas</p>
       
       <?php if(Yii::app()->user->hasFlash('success')): ?>
         <div class="alert alert-warning">
